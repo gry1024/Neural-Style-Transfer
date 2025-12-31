@@ -1,7 +1,9 @@
+# 参考文献
 import torch
 import torchvision
 from torch import nn
 from d2l import torch as d2l
+# pip install d2l==1.0.3
 
 # 1. 读取图片
 # d2l.Image.open 只是对 PIL 的封装，实际使用 PIL.Image.open 也可以
