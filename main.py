@@ -5,6 +5,7 @@ from torchvision import transforms
 from PIL import Image
 import matplotlib.pyplot as plt
 import os
+import torch.nn.functional as F
 
 # =========================
 # 基本配置
@@ -12,12 +13,12 @@ import os
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 content_name = "WestGate.jpg"
-style_name = "starry_night.jpg"
+style_name = "candy.jpg"
 
 content_img = Image.open(f"images/contents/{content_name}").convert("RGB")
 style_img = Image.open(f"images/styles/{style_name}").convert("RGB")
 
-image_shape = (300, 450)
+image_shape = (300, 500)
 
 # ImageNet 归一化参数
 rgb_mean = torch.tensor([0.485, 0.456, 0.406], device=device)
@@ -71,8 +72,9 @@ def content_loss(y_hat, y):
 
 def gram(x):
     b, c, h, w = x.shape
-    x = x.view(c, h * w)
-    return torch.matmul(x, x.t()) / (c * h * w)
+    features = x.view(b, c, h * w)
+    gram_mat = torch.bmm(features, features.transpose(1, 2))
+    return gram_mat / (c * h * w)
 
 def style_loss(y_hat, gram_y):
     return torch.mean((gram(y_hat) - gram_y.detach()) ** 2)
@@ -93,13 +95,13 @@ contents_Y, _ = extract_features(content_X)
 _, styles_Y = extract_features(style_X)
 styles_Y_gram = [gram(y) for y in styles_Y]
 
-noise_strength = 0.1
+noise_strength = 0.02
 generated = nn.Parameter(
     content_X.clone() + noise_strength * torch.randn_like(content_X)
 )
 
 # =========================
-# 优化器 + 学习率衰减（新增）
+# 优化器 + 学习率衰减
 # =========================
 lr = 0.2
 optimizer = torch.optim.Adam([generated], lr=lr)
@@ -110,14 +112,17 @@ scheduler = torch.optim.lr_scheduler.StepLR(
     gamma=0.5
 )
 
-content_weight = 1
-style_weight = 1e4
-tv_weight = 10
+# 分层风格权重
+style_layer_weights = [1.0, 0.8, 0.5, 0.3, 0.1]
+
+content_weight = 20
+style_weight = 3e5
+tv_weight = 30
 
 # =========================
 # 训练
 # =========================
-num_epochs = 500
+num_epochs = 700
 
 for epoch in range(num_epochs):
     optimizer.zero_grad()
@@ -125,14 +130,23 @@ for epoch in range(num_epochs):
     contents_hat, styles_hat = extract_features(generated)
 
     c_loss = sum(content_loss(h, y) for h, y in zip(contents_hat, contents_Y))
-    s_loss = sum(style_loss(h, y) for h, y in zip(styles_hat, styles_Y_gram))
+    s_loss = sum(
+        w * style_loss(h, y)
+        for h, y, w in zip(styles_hat, styles_Y_gram, style_layer_weights)
+    )
     t_loss = tv_loss(generated)
 
     loss = content_weight * c_loss + style_weight * s_loss + tv_weight * t_loss
     loss.backward()
     optimizer.step()
+    scheduler.step()
 
-    scheduler.step()   # ← 新增：学习率衰减
+    # 防止像素值爆炸（非常重要）
+    with torch.no_grad():
+        generated.clamp_(
+            (0 - rgb_mean.view(1,3,1,1)) / rgb_std.view(1,3,1,1),
+            (1 - rgb_mean.view(1,3,1,1)) / rgb_std.view(1,3,1,1)
+        )
 
     if (epoch + 1) % 50 == 0:
         print(
