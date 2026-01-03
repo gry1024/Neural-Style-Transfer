@@ -11,9 +11,10 @@ import torch.nn.functional as F
 # 基本配置
 # =========================
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 
-content_name = "Library.jpg"
-style_name = "candy.jpg"
+content_name = "WestGate.jpg"
+style_name = "starry_night.jpg"
 
 # 路径保持一致
 content_path = f"images/contents/{content_name}"
@@ -26,7 +27,7 @@ style_img_pil = Image.open(style_path).convert("RGB")
 original_w, original_h = content_img_pil.size
 
 # 设定最终分辨率的长边限制
-max_target_size = 800
+max_target_size = 1024
 
 scale = max_target_size / max(original_h, original_w)
 target_h = int(original_h * scale)

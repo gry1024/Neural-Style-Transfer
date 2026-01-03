@@ -11,9 +11,10 @@ import torch.nn.functional as F
 # 基本配置
 # =========================
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 
-content_name = "Library.jpg"
-style_name = "candy.jpg"
+content_name = "WestGate.jpg"
+style_name = "starry_night.jpg"
 
 content_img = Image.open(f"images/contents/{content_name}").convert("RGB")
 style_img = Image.open(f"images/styles/{style_name}").convert("RGB")
@@ -23,7 +24,7 @@ original_w, original_h = content_img.size
 
 # 设定你想要的最大边长 (例如 800 或 1024)
 # 注意：VGG19在 800px 以上非常吃显存
-max_size = 800
+max_size = 1024
 
 scale = max_size / max(original_h, original_w)
 h = int(original_h * scale)
@@ -130,14 +131,14 @@ scheduler = torch.optim.lr_scheduler.StepLR(
 # 分层风格权重
 style_layer_weights = [1.0, 0.8, 0.5, 0.3, 0.1]
 
-content_weight = 20
-style_weight = 3e5
-tv_weight = 30
+content_weight = 10
+style_weight = 3e6
+tv_weight = 10
 
 # =========================
 # 训练
 # =========================
-num_epochs = 700
+num_epochs = 1000
 
 for epoch in range(num_epochs):
     optimizer.zero_grad()
@@ -163,7 +164,7 @@ for epoch in range(num_epochs):
             (1 - rgb_mean.view(1,3,1,1)) / rgb_std.view(1,3,1,1)
         )
 
-    if (epoch + 1) % 50 == 0:
+    if (epoch + 1) % 100 == 0:
         print(
             f"Epoch {epoch+1:3d} | "
             f"LR: {scheduler.get_last_lr()[0]:.5f} | "
