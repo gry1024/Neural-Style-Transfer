@@ -189,7 +189,7 @@ def run_style_transfer(stage_name, image_shape, num_epochs, init_img=None, use_l
     style_layer_weights = [1.0, 0.8, 0.5, 0.3, 0.1]
 
     c_weight = 10  # 内容权重
-    s_weight = 5e4  # 风格权重 (根据LapStyle逻辑，风格在草稿阶段很重要)
+    s_weight = 5e6  # 风格权重 (根据LapStyle逻辑，风格在草稿阶段很重要)
     tv_weight = 10
     lap_weight = 1500  # 拉普拉斯权重 (Revision阶段核心)
 

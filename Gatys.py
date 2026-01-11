@@ -67,8 +67,11 @@ vgg = torchvision.models.vgg19(weights=weights).features.to(device).eval()
 for param in vgg.parameters():
     param.requires_grad_(False)
 
-style_layers = [0, 5, 10, 19, 28]
-content_layers = [25]
+# 改进的层选择策略 - 参考neural-style
+# relu1_1, relu2_1, relu3_1, relu4_1, relu5_1
+style_layers = [1, 6, 11, 20, 29]
+# relu4_2
+content_layers = [21]
 
 def extract_features(x):
     contents, styles = [], []
@@ -119,21 +122,22 @@ generated = nn.Parameter(
 # =========================
 # 优化器 + 学习率衰减
 # =========================
-lr = 0.2
+lr = 0.3
 optimizer = torch.optim.Adam([generated], lr=lr)
 
 scheduler = torch.optim.lr_scheduler.StepLR(
     optimizer,
-    step_size=100,
+    step_size=200,
     gamma=0.5
 )
 
 # 分层风格权重
-style_layer_weights = [1.0, 0.8, 0.5, 0.3, 0.1]
+style_layer_weights = [1.0, 0.8, 0.5, 0.6, 0.5]
 
 content_weight = 10
-style_weight = 3e6
-tv_weight = 10
+style_weight = 3e8
+tv_weight = 1
+
 
 # =========================
 # 训练
