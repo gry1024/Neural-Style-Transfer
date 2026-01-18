@@ -32,7 +32,7 @@ Neural-Style-Transfer/
 ├── FastStyle.py         # 快速风格迁移实现脚本
 ├── Gatys.py             # 经典Gatys神经风格迁移实现脚本
 ├── Lapstyle.py          # 基于拉普拉斯金字塔的风格迁移实现脚本
-├── segment_style_tranfer.py # 语义分割/实时局部风格迁移实现脚本
+├── segment_style_transfer.py # 语义分割/实时局部风格迁移实现脚本
 ├── sam_vit_h_4b8939.pth # SAM (Segment Anything Model) 权重文件(需自行下载)
 ├── Report.pdf           # 项目技术报告
 ├── requirements.txt     # 环境依赖清单
