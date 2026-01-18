@@ -68,7 +68,7 @@ python segment_style_tranfer.py
 
 ## 3. Fast Style Transfer
 
-预训练权重位于 `checkpoints/` 中。
+预训练权重位于 `checkpoints/` 中。若想训练新风格图需要下载COCO数据集。
 
 **Inference:** 运行以下命令使用现有权重生成风格化图像。
 
