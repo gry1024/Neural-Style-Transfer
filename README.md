@@ -62,7 +62,7 @@ pip install -r requirements.txt
 运行以下命令启动交互界面。移动标高亮物体，点击左键以切换风格。
 
 ```bash
-python segment_style_tranfer.py
+python segment_style_transfer.py
 ```
 
 ## 3. Fast Style Transfer
