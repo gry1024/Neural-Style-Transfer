@@ -25,7 +25,6 @@
 ```text
 Neural-Style-Transfer/
 ├── checkpoints/         # 存放预训练模型权重 (.pth) 用于FastStyle
-├── data/                # Fast训练数据集
 ├── images/              # 输入图像
 │   ├── contents/        # 待转换的内容图 (Content Images)
 │   └── styles/          # 风格参考图 (Style Images)
@@ -43,7 +42,7 @@ Neural-Style-Transfer/
 
 ## 1. Installation
 
-代码已在 Windows 环境下使用 NVIDIA GPU 进行测试。实验基于 Python 3.11, PyTorch 2.4.0 和 CUDA 12.1 进行。
+代码已在 Windows 环境下使用 NVIDIA GPU 进行测试。 实验基于 Python 3.11, PyTorch 2.4.0 和 CUDA 12.1 进行。
 
 安装 Conda 并创建 Conda 环境。
 
@@ -69,7 +68,7 @@ python segment_style_tranfer.py
 
 ## 3. Fast Style Transfer
 
-**Data:** COCO 数据集已包含在 `data/` 文件夹中用于训练。预训练权重位于 `checkpoints/` 中。
+预训练权重位于 `checkpoints/` 中。
 
 **Inference:** 运行以下命令使用现有权重生成风格化图像。
 
