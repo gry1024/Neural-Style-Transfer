@@ -36,7 +36,6 @@ Neural-Style-Transfer/
 ├── sam_vit_h_4b8939.pth # SAM (Segment Anything Model) 权重文件(需自行下载)
 ├── Report.pdf           # 项目技术报告
 ├── requirements.txt     # 环境依赖清单
-├── 演示视频.mp4           # 项目效果演示视频
 └── README.md            # 项目说明文档
 ```
 
